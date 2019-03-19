@@ -15,7 +15,7 @@ public class Main {
 		
 		int[] next = new int[n];
 		Arrays.fill(next, -1);
-		int[] last = new int[n];
+		int[] last = new int[200000];
 		Arrays.fill(last, -1);
 		for(int i=n-1; i>=0; i--) {
 			if(last[stone[i]] > i+1) 
