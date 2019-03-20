@@ -1,5 +1,5 @@
-        String str = Int.toBinaryString(n);
-        String str = Int.toString(n, 2);
+        String str = Integer.toBinaryString(n);
+        String str = Integer.toString(n, 2);
         
-        int n = Int.parseInt(str, 2));
+        int n = Integer.parseInt(str, 2));
 
