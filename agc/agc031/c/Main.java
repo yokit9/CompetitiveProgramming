@@ -4,18 +4,16 @@ import static java.lang.System.*;
 import java.util.*;
 
 public class Main {
-	public static int n, a, b, ac, bc;
-	
     public static void main(String[] args) {
         Scanner sc = new Scanner(in);
 
-        n = sc.nextInt();
-		a = sc.nextInt();
-		b = sc.nextInt();
+        int n = sc.nextInt();
+		long a = sc.nextInt();
+		long b = sc.nextInt();
 
-		ac=0; bc=0;
-		for(int i=a; i>0; i>>=1) if((i&1) > 0) ac++;
-	    for(int i=b; i>0; i>>=1) if((i&1) > 0) bc++;
+		int ac=0, bc=0;
+		for(long i=a; i>0; i>>=1) if((i&1) > 0) ac++;
+	    for(long i=b; i>0; i>>=1) if((i&1) > 0) bc++;
 		//out.println(ac + " " + bc);
 		
 			
@@ -36,73 +34,26 @@ public class Main {
 		if(num[n] != 0) out.println("NO");
 		else {
 			out.println("YES");
-			
-			boolean[] closed = new boolean[1<<n];
-			Arrays.fill(closed, false);
-			closed[b] = true;
-			search(b, bc, closed, 0);
-			out.println(b);
+			search(n, a, b, 0);
 		}
     }
 	
-	public static boolean search(int now, int nowc, boolean[] closed, int count) {
-		if(count >= (1<<n)-1) return now == a;
-		
-		
-		LinkedList<Integer> next;
-		if(a<b && nowc<ac || a>b && nowc<=ac) {
-			next = getMinus(now);
-			next.addAll(getPlus(now));
+	static void search(int n, long a, long b, long m) {
+		//out.println(a + " " + b + " " + m);
+		if((m|(m+1)) == (1<<n)-1) {
+			out.println(a);
+			out.println(b);
+			return;
 		}
-		else {
-			next = getPlus(now);
-			next.addAll(getMinus(now));
-		}
-		for(int i=0; i<count; i++) out.print(" ");
-		out.print(now);
-		for(int i=0; i<(1<<n)-count; i++) out.print(" ");
-		out.printf("(%5s) ",Integer.toString(now, 2));
-		out.print(count + ": ");
-		for(int nk: next) out.print(nk + " ");
-		out.println();
-
 		
-		for(int nk: next) {
-			if(!closed[nk]) {				
-				closed[nk] = true;
-				int nextc = nowc + ((now & nk) == now ? 1 : -1);
-				if(search(nk, nextc, closed, count+1)) {
-					out.print(nk + " ");
-					//out.printf("%5s\n", Integer.toString(nk, 2));
-					return true;
-				}
-				closed[nk] = false;
+	    for(long i=1; i<(1<<n); i<<=1) {
+			if((m&i) ==0 && ((a&i) ^ (b&i)) != 0) {
+				m |= i;
+				search(n, a, a^((m|m+1)-m), m);
+				search(n, (a^((m|m+1)-m))^i, b, m);
+				break;
 			}
 		}
-		
-		return false;
 	}
-	
-	public static LinkedList<Integer> getMinus(int now) {
-		LinkedList<Integer> next = new LinkedList<Integer>();
-		
-		int k = now & (now-1);
-		while(k != now) {
-			next.add(k);
-			k = now & (k - (k ^ now));
-		}
-		return next;
-	}
-	
-	public static LinkedList<Integer> getPlus(int now) {
-		LinkedList<Integer> next = new LinkedList<Integer>();
-		
-		int k = (now | (now+1)) & ((1<<n)-1);
-		while(k != now) {
-			next.add(k);
-			k = (now | (k + (k ^ now))) & ((1<<n)-1);
-		}
-		return next;
-	}
-}
 
+}
